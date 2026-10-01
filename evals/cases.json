@@ -1,0 +1,147 @@
+{
+  "cases": [
+    {
+      "id": "py-file-cache",
+      "language": "python",
+      "files": ["python/file_cache.py"],
+      "config": ["python/requirements.txt"],
+      "expect": [
+        {"match": "handle = open(path", "categories": ["leak"], "keywords": ["close", "with ", "context manager", "leak"]},
+        {"match": "def load_profiles(paths, cache={})", "categories": ["correctness", "design"], "keywords": ["mutable", "default"]}
+      ]
+    },
+    {
+      "id": "py-orders-repo",
+      "language": "python",
+      "files": ["python/orders_repo.py"],
+      "config": ["python/requirements.txt"],
+      "expect": [
+        {"match": "f\"SELECT id, total FROM orders", "categories": ["security"], "keywords": ["injection", "parameter"]},
+        {"match": "except Exception:", "categories": ["error-handling"], "keywords": ["swallow", "hide", "silent", "mask", "broad"]}
+      ]
+    },
+    {
+      "id": "py-price-service",
+      "language": "python",
+      "files": ["python/price_service.py"],
+      "config": ["python/requirements.txt"],
+      "expect": [
+        {"match": "response = requests.get(", "categories": ["performance", "concurrency"], "keywords": ["block", "event loop", "httpx", "aiohttp"]},
+        {"match": "time.sleep(5)", "categories": ["performance", "concurrency"], "keywords": ["block", "asyncio.sleep", "event loop"]},
+        {"match": ["_price_cache = {}", "_price_cache[symbol] = price"], "categories": ["leak"], "keywords": ["unbounded", "grow", "ttl", "expir", "evict", "stale"]}
+      ]
+    },
+    {
+      "id": "py-payments-client",
+      "language": "python",
+      "files": ["python/payments_client.py"],
+      "config": ["python/requirements.txt"],
+      "expect": [
+        {"match": "API_KEY = \"sk-live", "categories": ["secret-leak"], "keywords": ["secret", "hard-coded", "hardcoded"]},
+        {"match": "verify=False", "categories": ["security"], "keywords": ["verify", "tls", "ssl", "certificate"]}
+      ]
+    },
+    {
+      "id": "py-cart-clean",
+      "language": "python",
+      "clean": true,
+      "files": ["python/cart.py"],
+      "expect": []
+    },
+    {
+      "id": "cs-report-exporter",
+      "language": "csharp",
+      "files": ["csharp/ReportExporter.cs"],
+      "config": ["csharp/Samples.csproj"],
+      "expect": [
+        {"match": ["var stream = new FileStream(", "var writer = new StreamWriter(stream);"], "categories": ["leak"], "keywords": ["dispose", "using"]},
+        {"match": "public async void ExportLater", "categories": ["concurrency", "error-handling"], "keywords": ["async void"]}
+      ]
+    },
+    {
+      "id": "cs-order-service",
+      "language": "csharp",
+      "files": ["csharp/OrderService.cs"],
+      "config": ["csharp/Samples.csproj"],
+      "expect": [
+        {"match": "var client = new HttpClient();", "categories": ["performance", "leak"], "keywords": ["httpclient", "socket", "ihttpclientfactory"]},
+        {"match": ["client.GetAsync(", "ReadFromJsonAsync<Order>().Result"], "categories": ["concurrency"], "keywords": ["deadlock", "sync-over-async", "synchronous", "blocking", ".result"]}
+      ]
+    },
+    {
+      "id": "cs-price-widget",
+      "language": "csharp",
+      "files": ["csharp/PriceWidget.cs"],
+      "config": ["csharp/Samples.csproj"],
+      "expect": [
+        {"match": "PriceFeed.PriceChanged += OnPriceChanged;", "categories": ["leak"], "keywords": ["unsubscribe", "-=", "leak", "detach"]}
+      ]
+    },
+    {
+      "id": "cs-user-repository",
+      "language": "csharp",
+      "files": ["csharp/UserRepository.cs"],
+      "config": ["csharp/Samples.csproj"],
+      "expect": [
+        {"match": "\"SELECT IsAdmin FROM Users WHERE UserName = '\" + userName", "categories": ["security"], "keywords": ["injection", "parameter"]},
+        {"match": "catch (Exception)", "categories": ["error-handling"], "keywords": ["swallow", "hide", "silent", "mask", "broad"]}
+      ]
+    },
+    {
+      "id": "cs-temperature-clean",
+      "language": "csharp",
+      "clean": true,
+      "files": ["csharp/TemperatureConverter.cs"],
+      "config": ["csharp/Samples.csproj"],
+      "expect": []
+    },
+    {
+      "id": "react-window-width",
+      "language": "react",
+      "files": ["react/useWindowWidth.tsx"],
+      "config": ["react/package.json"],
+      "expect": [
+        {"match": "window.addEventListener('resize', onResize)", "categories": ["leak"], "keywords": ["cleanup", "removeeventlistener"]}
+      ]
+    },
+    {
+      "id": "react-countdown",
+      "language": "react",
+      "files": ["react/Countdown.tsx"],
+      "config": ["react/package.json"],
+      "expect": [
+        {"match": "setInterval(() => {", "categories": ["leak"], "keywords": ["clearinterval", "cleanup"]},
+        {"match": "setRemaining(remaining - 1)", "categories": ["correctness"], "keywords": ["stale", "closure", "functional", "prev"]}
+      ]
+    },
+    {
+      "id": "react-comment-list",
+      "language": "react",
+      "files": ["react/CommentList.tsx"],
+      "config": ["react/package.json"],
+      "expect": [
+        {"match": "<li key={index}>", "categories": ["correctness", "performance"], "keywords": ["key", "index"]},
+        {"match": "dangerouslySetInnerHTML", "categories": ["security"], "keywords": ["xss", "sanitiz"]}
+      ]
+    },
+    {
+      "id": "react-user-profile",
+      "language": "react",
+      "files": ["react/UserProfile.tsx"],
+      "config": ["react/package.json"],
+      "expect": [
+        {"match": "}, [])", "categories": ["correctness"], "keywords": ["dependenc", "userid", "stale"]},
+        {"match": "fetch(`/api/users/${userId}`)", "categories": ["leak", "concurrency"], "keywords": ["abort", "race", "unmount", "cancel", "out of order"]},
+        {"match": ".then((response) => response.json())", "categories": ["error-handling"], "keywords": ["response.ok", "status", ".catch", "non-2xx", "reject"]}
+      ]
+    },
+    {
+      "id": "react-save-button-clean",
+      "language": "react",
+      "clean": true,
+      "files": ["react/SaveButton.tsx"],
+      "config": ["react/package.json"],
+      "expect": []
+    }
+  ]
+}

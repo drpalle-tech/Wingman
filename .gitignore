@@ -1,0 +1,25 @@
+# Secrets
+.env
+.env.*
+!.env.template
+
+# Python
+__pycache__/
+*.pyc
+venv/
+.venv/
+.pytest_cache/
+
+# Node
+node_modules/
+dist/
+
+# Local tooling / outputs
+.claude/settings.local.json
+.claude/launch.json
+evals/results/
+backend/data/
+
+# Reference copy of the original app, not part of this codebase
+wingman-copilot-complete/
+wingman-copilot-complete.zip

@@ -1,0 +1,19 @@
+{
+  "name": "@wingman/client",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Typed client for the Wingman backend, shared by the web UI, VS Code extension and CLI",
+  "type": "module",
+  "main": "src/index.ts",
+  "types": "src/index.ts",
+  "scripts": {
+    "generate": "openapi-typescript ../../backend/openapi.json -o src/schema.ts",
+    "typecheck": "tsc --noEmit",
+    "test": "node --test \"test/**/*.test.ts\""
+  },
+  "devDependencies": {
+    "@types/node": "^24.19.0",
+    "openapi-typescript": "^7.13.0",
+    "typescript": "^5.9.3"
+  }
+}

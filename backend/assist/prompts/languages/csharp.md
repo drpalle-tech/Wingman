@@ -1,0 +1,11 @@
+### C# / .NET
+- Disposal: `IDisposable`/`IAsyncDisposable` objects (streams, readers/writers, `DbConnection`, `DbCommand`, `HttpResponseMessage`, `CancellationTokenSource`, timers) not in `using`/`await using`; disposing objects the DI container owns.
+- Events and subscriptions: handlers attached to longer-lived publishers (static events, singletons, `INotifyPropertyChanged`, `IObservable`) and never detached, which keeps subscribers alive.
+- Async: `async void` outside event handlers; sync-over-async (`.Result`, `.Wait()`, `.GetAwaiter().GetResult()`) causing deadlocks or thread-pool starvation; `CancellationToken` not passed through; unobserved tasks; `Task.Run` in ASP.NET request paths.
+- HttpClient: `new HttpClient()` per call (socket exhaustion); use `IHttpClientFactory` or one shared instance with a timeout.
+- Data access: SQL built by string concatenation or interpolation instead of parameters; N+1 queries; `ToList()` before filtering; no `AsNoTracking()` for read-only EF queries; long-lived `DbContext`.
+- Exceptions: empty or catch-all `catch (Exception)` that hides failures; `throw ex;` (loses the stack trace); exceptions for control flow.
+- DI and lifetimes: scoped services captured by singletons, service locator, static mutable state.
+- Security: missing authorization or input validation on endpoints, secrets in `appsettings.json`, insecure deserialization (`BinaryFormatter`, `TypeNameHandling.All`), weak crypto, sensitive data in logs.
+- Correctness: `DateTime.Now` where UTC is needed, `double` for money, ignored nullable warnings, non-thread-safe collections shared across threads, `lock` on `this` or strings.
+- Tests: xUnit/NUnit/MSTest conventions, Moq or NSubstitute; no real network or database in unit tests.
